@@ -11,7 +11,8 @@ class IndexView(View):
 
         while not city:
             ret = get_client_data()
-            city = ret['city']
+            if ret:
+                city = ret['city']
         # O q representa o termo que vai ser buscado, por exemplo: pizzaria
         q = request.GET.get('key', None)
         loc = request.GET.get('loc', None)
@@ -34,4 +35,4 @@ class IndexView(View):
                 'city': location,
                 'busca': True
             }
-        return render(request, 'index.html', context)
+        return render(request, 'base.html', context)

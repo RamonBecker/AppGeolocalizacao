@@ -2,8 +2,7 @@ import requests
 from random import randint
 # from django.conf import settings
 from geo import settings
-from django.contrib.gis.geoip2 import GeoIP2
-from django.contrib.gis.geoip2 import geoip2
+from django.contrib.gis.geoip2 import GeoIP2, GeoIP2Exception
 
 YELP_SEARCH_ENDPOINT = 'https://api.yelp.com/v3/businesses/search'
 
@@ -32,7 +31,7 @@ def get_client_data():
     try:
         return g.city(ip)
     # Caso não for encontrado a cidade, é lançado a exceção e retornado None
-    except geoip2.erros.AddressNotFoundError:
+    except GeoIP2Exception:
         return None
 
 #Gerando ips randomicos para busca
