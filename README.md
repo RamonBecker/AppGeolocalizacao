@@ -17,6 +17,7 @@ A map has been placed for the user to better locate the location using openstree
 
 ## Demo
 
+![localidades](https://user-images.githubusercontent.com/44611131/120345448-dce65200-c2d0-11eb-9ca4-3dfbe5ef7e1b.png)
 
 ## ⚙️ Creating virtual machine
 
