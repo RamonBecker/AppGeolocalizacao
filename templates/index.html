@@ -1,42 +1,70 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-
     <div class="row">
         <div class="col-sm-6">
             <form autocomplete="off" action="{% url 'index' %}">
                 {% csrf_token %}
                 <div class="form-group">
-                    <h1><a href="{% url 'index' %}">Buscador de localização</a></h1>
-                    <h4>[{{ city }} { % if country %} - {{ country }} {% endif %}]</h4>
+                    <h1><a href="{% url 'index' %}">Buscador de lugares</a></h1>
+                    <h4>Localização atual: {{ cidade }}, {{ regiao }}, {{ pais }}</h4>
                 </div>
                 <div class="form-group">
-                    <input class="form-control" type="text" name="key" id="key" placeholder="Digite um termo para busca. OBRIGATÓRIO" required/>
-                    <small id="keyhep" class="form-text text-muted">Exemplo: Mexican Food, Brazilian Food, Asian Food</small>
+                    <input class="form-control" type="text" name="key" placeholder="Digite um termo para busca (obrigatório)" required/>
+                    <small id="keyHelp" class="form-text text-muted">Exemplo: Mexican Food, Brazilian Food, Asian Food</small>
                 </div>
                 <div class="form-group">
-                    <input class="form-control" type="text" name="loc" id="loc" placeholder="Digite uma cidade para efetuar a busca"/>
-                    <small id="lochep" class="form-text text-muted">Exemplo: Vancouver, Madrid, Mexico City</small>
+                    <input class="form-control" type="text" name="loc" placeholder="Digite uma cidade para efetuar a busca"/>
+                    <small id="keyLoc" class="form-text text-muted">Exemplo: Vancouver, Madrid, Mexico City</small>
                 </div>
                 <button type="submit" class="btn btn-primary">Buscar</button>
             </form>
             {% if 'error' in items %}
-                <div class="alert alert-warning" role="alert">
-                    Nenhum estabelecimento encontrado em {{ city }}
-                </div>
+                <h1>Nenhum estabelecimento encontrado em {{ city }}</h1>
             {% elif busca and items.businesses|length < 1 %}
-                <div class="alert alert-info" role="alert">
-                    Não foi possível encontrar sobre o termo digitado
-                </div>
+                <h1>Nada encontrado sobre o termo buscado</h1>
             {% elif city and items %}
-                <h1>Resultado da busca</h1>
+                <h1>Resultado da Busca</h1>
+                <div class="row">
                 {% for biz in items.businesses %}
-                    <span class="text-info">{{ biz.name }}, {{ city }}</span> <br/>
-                {% endfor %}
-            {% endif %}
-        </div>
-        {% if city and items %}
-            {% include 'maps.html' %}
-        {% endif%}
 
+                <div class="card mb-3" style="width: 30rem;">
+                  <div class="row no-gutters">
+                    <div class="col-md-4">
+                        {% if biz.image_url %}
+                      <img src="{{ biz.image_url }}" class="img-thumbnail rounded" style="width: 150px; height: 150px;">
+                        {% else %}
+                        <img src="{% static 'img/imagenotfound.png' %}" class="img-thumbnail rounded" style="width: 150px; height: 150px;">
+                        {% endif %}
+                    </div>
+                    <div class="col-md-8">
+                      <div class="card-body">
+                        <h5 class="card-title text-center">{{ biz.name }}</h5>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item text-center">Telefone:
+                                    {% if biz.display_phone %}
+                                    {{ biz.display_phone }}</li>
+                                    {% else%}
+                                        Não há telefone cadastrado
+                                    {% endif %}
+                            </ul>
+                          <br/>
+                              <div class="text-center">
+                                  {{ biz.location.display_address }}
+                            <a href="{{ biz.url }}" class="btn btn-primary md-4" >Acesse aqui para mais informações</a>
+                              </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {% endfor %}
+                <br>
+            {% endif %}
+                </div>
+        </div>
+        {% if city and items|length > 1 %}
+            {% include 'maps.html' %}
+        {% endif %}
 {% endblock %}
